@@ -50,8 +50,9 @@ export const DEFAULT_TIMINGS = {
 
 // Price back past the threshold by 0.5 % re-arms an alert.
 export const REARM_RATIO = 0.005;
-// Scene events fired by one cycle at most: the core takes 300 a minute.
-export const MAX_EVENTS_PER_CYCLE = 20;
+// Scene events fired by one cycle at most: the core takes 300 a minute, and
+// 20 symbols crossing every level of the day stay below.
+export const MAX_EVENTS_PER_CYCLE = 100;
 // Slack on the "is it due" checks, so a timer firing a little early still reads.
 const SLACK_MS = MINUTE;
 
@@ -84,6 +85,7 @@ export class Monitor {
     this.lastCycleAt = -Infinity;
     this.refusals = 0;
     this.refusedUntil = -Infinity;
+    this.forceNext = false;
     this.discovered = null;
     this.statusMessage = undefined;
     this.cycleTimer = null;
@@ -120,7 +122,12 @@ export class Monitor {
     this.config = config;
     const saved = await this.store.load();
     if (saved?.version === 1) {
-      this.data = { ...emptyData(), ...saved };
+      const valid = (value) => value && typeof value === 'object' && !Array.isArray(value);
+      this.data = {
+        ...emptyData(),
+        alerts: valid(saved.alerts) ? saved.alerts : {},
+        moves: valid(saved.moves) ? saved.moves : {},
+      };
     }
     this.warnAboutConfig();
     logger.info(
@@ -228,7 +235,10 @@ export class Monitor {
   }
 
   /** Whether a symbol is to be read in this cycle. */
-  due(symbol, now) {
+  due(symbol, now, force = false) {
+    if (force) {
+      return true;
+    }
     if (this.unknown.has(symbol)) {
       return now - this.unknown.get(symbol) >= this.timings.unknownMs - SLACK_MS;
     }
@@ -240,6 +250,11 @@ export class Monitor {
     if (start !== null && start <= now && (quote.readAt < start || end === null || now < end)) {
       // Within the session hours (no trade yet at the opening, or a holiday),
       // or a session started since the last reading.
+      return true;
+    }
+    if (end !== null && now >= end && quote.readAt < end + this.timings.closedMs) {
+      // Just after the end of a session: the next one may follow at once
+      // (currencies and crypto roll over at midnight), unknown until read.
       return true;
     }
     const every = Math.max(this.timings.closedMs, this.config.refreshMinutes * MINUTE);
@@ -261,6 +276,8 @@ export class Monitor {
   }
 
   async cycle() {
+    const force = this.forceNext;
+    this.forceNext = false;
     const now = this.now();
     this.lastCycleAt = now;
     if (now < this.refusedUntil) {
@@ -271,7 +288,7 @@ export class Monitor {
     let read = 0;
     let ok = true;
     for (const symbol of this.config.symbols) {
-      if (this.stopped || !this.due(symbol, now)) {
+      if (this.stopped || !this.due(symbol, now, force)) {
         continue;
       }
       if (read > 0 && this.timers) {
@@ -310,10 +327,10 @@ export class Monitor {
     }
     logger.debug(`Refresh cycle: ${read} symbol(s) read, ${events.length} scene event(s)`);
     this.recovered('cycle', 'Refresh cycles work again');
-    this.store.save(this.data);
     await this.publishDiscovered();
     await this.publishStates();
     await this.fireAll(events);
+    this.store.save(this.data);
     await this.updateConnectionStatus();
     const signature = this.list()
       .map((q) => `${q.symbol}:${q.price}:${q.changePercent}:${q.open}`)
@@ -354,7 +371,7 @@ export class Monitor {
         states[key] = beyond ? 'fired' : 'armed';
       } else if (state === 'armed' && beyond) {
         states[key] = 'fired';
-        events.push({ key: TRIGGERS.THRESHOLD, quote, direction, threshold });
+        events.push({ key: TRIGGERS.THRESHOLD, quote, direction, threshold, alert: key });
       } else if (state === 'fired' && back) {
         states[key] = 'armed';
       }
@@ -407,12 +424,35 @@ export class Monitor {
   // --- Scene events ------------------------------------------------------------
 
   async fireAll(events) {
-    for (const [index, event] of events.entries()) {
+    // Price alerts first: set by the user, they matter more than the moves.
+    const ordered = [
+      ...events.filter((event) => event.key === TRIGGERS.THRESHOLD),
+      ...events.filter((event) => event.key === TRIGGERS.MOVE),
+    ];
+    for (const [index, event] of ordered.entries()) {
       if (index >= MAX_EVENTS_PER_CYCLE) {
-        logger.debug(`${events.length - index} more scene event(s) not sent`);
+        logger.debug(`${ordered.length - index} more scene event(s) not sent`);
+        ordered.slice(index).forEach((left) => this.unfire(left));
         break;
       }
-      await this.fire(event);
+      if (!(await this.fire(event))) {
+        this.unfire(event);
+      }
+    }
+  }
+
+  /** An event not sent is not taken as fired: it fires at the next reading. */
+  unfire({ key, quote, direction, threshold, alert }) {
+    if (key === TRIGGERS.THRESHOLD) {
+      this.data.alerts[alert] = 'armed';
+      return;
+    }
+    const record = this.data.moves[quote.symbol];
+    if (record) {
+      record[direction] = Math.min(
+        record[direction],
+        Math.max(0, ...LEVELS.filter((level) => level < threshold)),
+      );
     }
   }
 
@@ -431,8 +471,10 @@ export class Monitor {
     try {
       await this.gladys.publishSceneEvent(key, data);
       this.recovered('scene', 'Scene triggers work again');
+      return true;
     } catch (err) {
       this.failed('scene', 'warn', `Firing the scene trigger failed: ${err.message}`);
+      return false;
     }
   }
 
@@ -580,9 +622,16 @@ export class Monitor {
     }
   }
 
-  /** The quotes, read again if the last cycle is older than one interval. */
-  async fresh() {
-    if (this.now() - this.lastCycleAt >= this.config.refreshMinutes * MINUTE) {
+  /**
+   * The quotes, read again if the last cycle is older than one interval;
+   * `force`: every symbol read now (closed markets and unknown symbols too).
+   */
+  async fresh(force = false) {
+    if (force) {
+      await this.running;
+      this.forceNext = true;
+      await this.runCycle();
+    } else if (this.now() - this.lastCycleAt >= this.config.refreshMinutes * MINUTE) {
       await this.runCycle();
     } else {
       await this.running;

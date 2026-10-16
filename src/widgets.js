@@ -31,6 +31,12 @@ export const TEXT = {
     de: 'Kein Symbol verfolgt',
     es: 'Ningún símbolo seguido',
   },
+  unknown: {
+    en: 'Unknown symbols:',
+    fr: 'Symboles inconnus :',
+    de: 'Unbekannte Symbole:',
+    es: 'Símbolos desconocidos:',
+  },
   shown: { en: 'shown', fr: 'affichés', de: 'angezeigt', es: 'mostrados' },
   source: {
     en: 'Yahoo Finance, delayed',
@@ -109,8 +115,14 @@ export const WIDGETS = {
       const quotes = monitor.list();
       const components = [];
       if (quotes.length === 0) {
-        const empty = monitor.config.symbols.length === 0 ? TEXT.none : TEXT.waiting;
-        components.push({ type: 'text', variant: 'heading', text: t(empty, lang) });
+        const unknown = monitor.config.symbols.filter((symbol) => monitor.unknown.has(symbol));
+        const text =
+          monitor.config.symbols.length === 0
+            ? t(TEXT.none, lang)
+            : unknown.length === monitor.config.symbols.length
+              ? clip(`${t(TEXT.unknown, lang)} ${unknown.join(', ')}`, 100)
+              : t(TEXT.waiting, lang);
+        components.push({ type: 'text', variant: 'heading', text });
       } else {
         components.push({
           type: 'card-list',

@@ -233,3 +233,41 @@ test('daily move: yesterday change seen before the first trade is not a move', a
     ],
   );
 });
+
+test('just after a session end, read at every cycle: crypto rolls over at midnight', async (t) => {
+  const api = createApi();
+  const clock = createClock();
+  const w = await world(t, { symbols: 'BTC-EUR' }, { api, clock });
+  const regular = api.meta('BTC-EUR').currentTradingPeriod.regular;
+  const end = regular.end * 1000;
+  clock.set(end - 30 * 1000); // 23:59:30 UTC: the last read of the session
+  api.trade('BTC-EUR', 73000, end - 40 * 1000);
+  await w.monitor.runCycle();
+  api.session('BTC-EUR', end + 60 * 1000, end + 24 * HOUR);
+  await cycle(w); // 00:09: read, though the last reading said "closed"
+  await cycle(w);
+  assert.equal(api.symbols().length, 4);
+});
+
+test('a scene event Gladys refused fires again at the next reading', async (t) => {
+  const api = createApi();
+  const w = await world(t, { symbols: 'BTC-EUR', price_alerts: 'BTC-EUR > 75000' }, { api });
+  const publish = t.mock.method(w.gladys, 'publishSceneEvent', async () => {
+    throw new Error('Gladys restarting');
+  });
+  api.trade('BTC-EUR', 76000);
+  await cycle(w);
+  assert.equal(w.monitor.data.alerts['BTC-EUR|above|75000'], 'armed');
+  publish.mock.restore();
+  await cycle(w);
+  assert.equal(events(w, TRIGGERS.THRESHOLD).length, 1);
+  assert.equal(w.monitor.data.alerts['BTC-EUR|above|75000'], 'fired');
+});
+
+test('check_now reads every symbol at once, closed markets and unknown ones too', async (t) => {
+  const api = createApi();
+  const w = await world(t, { symbols: 'AIR.PA, NOPE' }, { api });
+  w.clock.advance(2 * MINUTE);
+  await w.fake.action('check_now');
+  assert.deepEqual(api.symbols(), ['AIR.PA', 'NOPE', 'AIR.PA', 'NOPE']);
+});

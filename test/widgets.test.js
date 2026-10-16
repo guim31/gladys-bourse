@@ -111,3 +111,14 @@ test('Yahoo never reached: the scene actions fail, the configuration action says
   const check = await w.fake.action('check_now');
   assert.match(check.data.message.en, /Yahoo Finance does not answer/);
 });
+
+test('every symbol unknown: the widget says which, the action says why', async (t) => {
+  const w = await world(t, { symbols: 'NOPE, ZZZ1', language: 'en' });
+  const widget = await content(w, 'fr');
+  assert.deepEqual(validateWidgetContent(widget), []);
+  assert.equal(widget.components[0].text, 'Symboles inconnus : NOPE, ZZZ1');
+  const read = await w.fake.sceneAction('read_quote', {
+    device: 'ext:test-integration:symbol:NOPE',
+  });
+  assert.equal(read.success, false);
+});

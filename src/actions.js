@@ -31,6 +31,9 @@ export async function readQuote(monitor, fields = {}) {
   }
   await monitor.fresh();
   const quote = monitor.quotes.get(symbol);
+  if (!quote && monitor.unknown.has(symbol)) {
+    throw new Error(STATUS[language].unknown({ values: symbol }));
+  }
   if (!quote) {
     throw new Error(STATUS[language].yahooDown);
   }
@@ -54,7 +57,8 @@ export async function readPortfolio(monitor) {
 
 /** Configuration action: the quotes now, and what is wrong, in every language. */
 export async function checkNow(monitor) {
-  const quotes = await monitor.fresh();
+  // The user asks now: every symbol is read, closed markets and unknown ones too.
+  const quotes = await monitor.fresh(true);
   logger.info(`Check requested: ${quotes.length} quote(s) read`);
   if (quotes.length === 0 && monitor.lastSuccessAt === null) {
     return render(STATUS, monitor.config.symbols.length === 0 ? 'noSymbol' : 'yahooDown');
