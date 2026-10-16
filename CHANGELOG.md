@@ -10,6 +10,8 @@ the notes of the version's GitHub Release.
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-10-16
+
 ### Added
 
 - One device per followed Yahoo Finance symbol (share, index, ETF, currency pair, cryptocurrency):
@@ -27,3 +29,6 @@ the notes of the version's GitHub Release.
 - "Show the current prices" in the Configuration screen, which also lists the symbols Yahoo does
   not know.
 - Texts and documentation in English, French, German and Spanish.
+
+[Unreleased]: https://github.com/guim31/gladys-bourse/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/guim31/gladys-bourse/releases/tag/v1.0.0
