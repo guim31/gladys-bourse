@@ -1,0 +1,63 @@
+{
+  "chart": {
+    "result": [
+      {
+        "meta": {
+          "currency": "EUR",
+          "symbol": "^FCHI",
+          "exchangeName": "PAR",
+          "fullExchangeName": "Paris",
+          "instrumentType": "INDEX",
+          "regularMarketTime": 1792080301,
+          "gmtoffset": 7200,
+          "timezone": "CEST",
+          "exchangeTimezoneName": "Europe/Paris",
+          "regularMarketPrice": 7934.7,
+          "regularMarketChangePercent": 0.782,
+          "fulldayChange": 61.59,
+          "regularMarketDayHigh": 0.0,
+          "regularMarketDayLow": 0.0,
+          "longName": "CAC 40",
+          "shortName": "CAC 40",
+          "chartPreviousClose": 7873.11,
+          "priceHint": 2,
+          "currentTradingPeriod": {
+            "pre": {
+              "timezone": "CEST",
+              "start": 1792134000,
+              "end": 1792134000,
+              "gmtoffset": 7200
+            },
+            "regular": {
+              "timezone": "CEST",
+              "start": 1792134000,
+              "end": 1792164600,
+              "gmtoffset": 7200
+            },
+            "post": {
+              "timezone": "CEST",
+              "start": 1792164600,
+              "end": 1792164600,
+              "gmtoffset": 7200
+            }
+          },
+          "dataGranularity": "1d",
+          "range": "1d"
+        },
+        "timestamp": [1792047600],
+        "indicators": {
+          "quote": [
+            {
+              "volume": [72137200],
+              "low": [7853.399902],
+              "high": [7937.290039],
+              "open": [7853.399902],
+              "close": [7934.700195]
+            }
+          ]
+        }
+      }
+    ],
+    "error": null
+  }
+}

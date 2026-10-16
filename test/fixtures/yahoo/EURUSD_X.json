@@ -1,0 +1,63 @@
+{
+  "chart": {
+    "result": [
+      {
+        "meta": {
+          "currency": "USD",
+          "symbol": "EURUSD=X",
+          "exchangeName": "CCY",
+          "fullExchangeName": "CCY",
+          "instrumentType": "CURRENCY",
+          "regularMarketTime": 1792121905,
+          "gmtoffset": 3600,
+          "timezone": "BST",
+          "exchangeTimezoneName": "Europe/London",
+          "regularMarketPrice": 1.122,
+          "regularMarketChangePercent": -0.0112,
+          "fulldayChange": -0.0001,
+          "regularMarketDayHigh": 1.1223,
+          "regularMarketDayLow": 1.1212,
+          "longName": "EUR/USD",
+          "shortName": "EUR/USD",
+          "chartPreviousClose": 1.1221,
+          "priceHint": 4,
+          "currentTradingPeriod": {
+            "pre": {
+              "timezone": "BST",
+              "end": 1792105200,
+              "start": 1792105200,
+              "gmtoffset": 3600
+            },
+            "regular": {
+              "timezone": "BST",
+              "end": 1792191540,
+              "start": 1792105200,
+              "gmtoffset": 3600
+            },
+            "post": {
+              "timezone": "BST",
+              "end": 1792191540,
+              "start": 1792191540,
+              "gmtoffset": 3600
+            }
+          },
+          "dataGranularity": "1d",
+          "range": "1d"
+        },
+        "timestamp": [1792121905],
+        "indicators": {
+          "quote": [
+            {
+              "volume": [0],
+              "high": [1.122334],
+              "open": [1.122208],
+              "close": [1.121957],
+              "low": [1.121202]
+            }
+          ]
+        }
+      }
+    ],
+    "error": null
+  }
+}

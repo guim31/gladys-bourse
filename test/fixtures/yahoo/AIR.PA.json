@@ -1,0 +1,63 @@
+{
+  "chart": {
+    "result": [
+      {
+        "meta": {
+          "currency": "EUR",
+          "symbol": "AIR.PA",
+          "exchangeName": "PAR",
+          "fullExchangeName": "Paris",
+          "instrumentType": "EQUITY",
+          "regularMarketTime": 1792078712,
+          "gmtoffset": 7200,
+          "timezone": "CEST",
+          "exchangeTimezoneName": "Europe/Paris",
+          "regularMarketPrice": 194.78,
+          "regularMarketChangePercent": 2.397,
+          "fulldayChange": 4.56,
+          "regularMarketDayHigh": 195.06,
+          "regularMarketDayLow": 188.2,
+          "longName": "Airbus SE",
+          "shortName": "AIRBUS SE",
+          "chartPreviousClose": 190.22,
+          "priceHint": 2,
+          "currentTradingPeriod": {
+            "pre": {
+              "timezone": "CEST",
+              "end": 1792134000,
+              "start": 1792134000,
+              "gmtoffset": 7200
+            },
+            "regular": {
+              "timezone": "CEST",
+              "end": 1792164600,
+              "start": 1792134000,
+              "gmtoffset": 7200
+            },
+            "post": {
+              "timezone": "CEST",
+              "end": 1792164600,
+              "start": 1792164600,
+              "gmtoffset": 7200
+            }
+          },
+          "dataGranularity": "1d",
+          "range": "1d"
+        },
+        "timestamp": [1792078712],
+        "indicators": {
+          "quote": [
+            {
+              "open": [188.199997],
+              "close": [194.779999],
+              "high": [195.059998],
+              "volume": [1577437],
+              "low": [188.199997]
+            }
+          ]
+        }
+      }
+    ],
+    "error": null
+  }
+}

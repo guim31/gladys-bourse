@@ -1,177 +1,724 @@
 {
   "manifest_version": 1,
   "type": "device",
-  "name": "Demo Devices Template",
+  "name": "Yahoo Finance",
   "description": {
-    "en": "Starter template showing sensors, a switch, a dimmable light and a smart plug.",
-    "fr": "Template de démarrage : capteurs, interrupteur, lampe variable et prise connectée."
+    "en": "Stock, index, ETF, currency and crypto prices in Gladys, from Yahoo Finance.",
+    "fr": "Cours d'actions, indices, ETF, devises et cryptos dans Gladys, via Yahoo Finance.",
+    "de": "Kurse von Aktien, Indizes, ETFs, Währungen und Kryptos in Gladys, von Yahoo Finance.",
+    "es": "Cotizaciones de acciones, índices, ETF, divisas y criptos en Gladys, de Yahoo Finance."
   },
   "version": "1.0.0",
-  "docker_image": "ghcr.io/gladysassistant/integration-template-js:1.0.0",
+  "docker_image": "ghcr.io/guim31/gladys-bourse:1.0.0",
   "gladys_version": ">=5.1.0",
-  "cover_image": "https://raw.githubusercontent.com/GladysAssistant/integration-template-js/master/cover.png",
-  "categories": ["lighting", "security", "environment"],
-  "transports": ["local", "cloud"],
+  "cover_image": "https://raw.githubusercontent.com/guim31/gladys-bourse/main/cover.png",
+  "categories": ["services"],
+  "transports": ["cloud"],
   "config_schema": [
     {
       "key": "intro",
       "type": "section",
-      "label": { "en": "Getting started", "fr": "Pour commencer" },
+      "label": {
+        "en": "Followed symbols",
+        "fr": "Symboles suivis",
+        "de": "Verfolgte Symbole",
+        "es": "Símbolos seguidos"
+      },
       "description": {
-        "en": "The demo weather station reads real data from the free Open-Meteo API: pick the coordinates to observe. No account, no API key.",
-        "fr": "La station météo de démonstration lit de vraies données via l'API gratuite Open-Meteo : choisissez les coordonnées à observer. Pas de compte, pas de clé d'API."
+        "en": "List the Yahoo Finance symbols to follow, save, then create their devices in the Discover tab. Find a symbol with the search of finance.yahoo.com: it is shown next to the name.",
+        "fr": "Indiquez les symboles Yahoo Finance à suivre, enregistrez, puis créez leurs appareils dans l'onglet Découverte. Trouvez un symbole avec la recherche de finance.yahoo.com : il figure à côté du nom.",
+        "de": "Gib die zu verfolgenden Yahoo-Finance-Symbole an, speichere und lege dann ihre Geräte im Tab „Entdecken“ an. Ein Symbol findest du über die Suche von finance.yahoo.com: Es steht neben dem Namen.",
+        "es": "Indique los símbolos de Yahoo Finance que desea seguir, guarde y cree sus dispositivos en la pestaña Descubrir. Encuentre un símbolo con la búsqueda de finance.yahoo.com: aparece junto al nombre."
       },
       "links": [
         {
-          "url": "https://open-meteo.com/en/docs",
-          "label": { "en": "Open-Meteo documentation", "fr": "Documentation Open-Meteo" }
+          "url": "https://github.com/guim31/gladys-bourse/blob/main/docs/en.md",
+          "label": {
+            "en": "Setup guide",
+            "fr": "Guide d'installation",
+            "de": "Installationsanleitung",
+            "es": "Guía de instalación"
+          }
         }
       ]
     },
     {
-      "key": "latitude",
-      "type": "number",
-      "label": { "en": "Latitude", "fr": "Latitude" },
-      "description": {
-        "en": "Latitude used for the demo weather sensor.",
-        "fr": "Latitude utilisée par le capteur météo de démonstration."
+      "key": "about",
+      "type": "section",
+      "label": {
+        "en": "Sources and limits",
+        "fr": "Sources et limites",
+        "de": "Quellen und Grenzen",
+        "es": "Fuentes y límites"
       },
-      "placeholder": { "en": "e.g. 48.8566", "fr": "ex. 48.8566" },
-      "required": true,
-      "default": 48.8566,
-      "min": -90,
-      "max": 90
-    },
-    {
-      "key": "longitude",
-      "type": "number",
-      "label": { "en": "Longitude", "fr": "Longitude" },
       "description": {
-        "en": "Longitude used for the demo weather sensor.",
-        "fr": "Longitude utilisée par le capteur météo de démonstration."
+        "en": "Public pages of Yahoo Finance, read without an account. Prices are delayed (often 15 minutes) and indicative: not for trading. Unofficial access, which Yahoo may change or refuse. Not affiliated with Yahoo.",
+        "fr": "Pages publiques de Yahoo Finance, lues sans compte. Cours différés (souvent 15 minutes) et indicatifs : pas pour passer des ordres. Accès non officiel, que Yahoo peut modifier ou refuser. Non affiliée à Yahoo.",
+        "de": "Öffentliche Seiten von Yahoo Finance, ohne Konto gelesen. Kurse verzögert (oft 15 Minuten) und unverbindlich: nicht zum Handeln. Inoffizieller Zugang, den Yahoo ändern oder sperren kann. Nicht mit Yahoo verbunden.",
+        "es": "Páginas públicas de Yahoo Finance, leídas sin cuenta. Cotizaciones diferidas (a menudo 15 minutos) e indicativas: no para operar. Acceso no oficial, que Yahoo puede cambiar o rechazar. Sin afiliación con Yahoo."
       },
-      "placeholder": { "en": "e.g. 2.3522", "fr": "ex. 2.3522" },
-      "required": true,
-      "default": 2.3522,
-      "min": -180,
-      "max": 180
-    },
-    {
-      "key": "unit",
-      "type": "select",
-      "label": { "en": "Temperature unit", "fr": "Unité de température" },
-      "required": false,
-      "default": "celsius",
-      "options": [
-        { "value": "celsius", "label": { "en": "Celsius", "fr": "Celsius" } },
-        { "value": "fahrenheit", "label": { "en": "Fahrenheit", "fr": "Fahrenheit" } }
+      "links": [
+        {
+          "url": "https://finance.yahoo.com",
+          "label": {
+            "en": "Yahoo Finance",
+            "fr": "Yahoo Finance",
+            "de": "Yahoo Finance",
+            "es": "Yahoo Finance"
+          }
+        },
+        {
+          "url": "https://legal.yahoo.com/us/en/yahoo/terms/otos/index.html",
+          "label": {
+            "en": "Yahoo terms of service",
+            "fr": "Conditions d'utilisation de Yahoo",
+            "de": "Nutzungsbedingungen von Yahoo",
+            "es": "Condiciones de servicio de Yahoo"
+          }
+        }
       ]
     },
     {
-      "key": "poll_frequency",
-      "type": "number",
-      "label": { "en": "Refresh interval (s)", "fr": "Intervalle de rafraîchissement (s)" },
+      "key": "symbols",
+      "type": "string",
+      "label": {
+        "en": "Symbols",
+        "fr": "Symboles",
+        "de": "Symbole",
+        "es": "Símbolos"
+      },
       "description": {
-        "en": "How often sensors are polled, in seconds (one minute minimum).",
-        "fr": "Fréquence d'interrogation des capteurs, en secondes (une minute minimum)."
+        "en": "Separated by commas, 20 at most: AIR.PA (Airbus in Paris), ^FCHI (CAC 40), CW8.PA (an ETF), EURUSD=X (euro in dollars), BTC-EUR (bitcoin in euros).",
+        "fr": "Séparés par des virgules, 20 au plus : AIR.PA (Airbus à Paris), ^FCHI (CAC 40), CW8.PA (un ETF), EURUSD=X (euro en dollars), BTC-EUR (bitcoin en euros).",
+        "de": "Durch Kommas getrennt, höchstens 20: SAP.DE (SAP in Frankfurt), ^GDAXI (DAX), CW8.PA (ein ETF), EURUSD=X (Euro in Dollar), BTC-EUR (Bitcoin in Euro).",
+        "es": "Separados por comas, 20 como máximo: SAN.MC (Santander en Madrid), ^IBEX (IBEX 35), CW8.PA (un ETF), EURUSD=X (euro en dólares), BTC-EUR (bitcoin en euros)."
+      },
+      "placeholder": {
+        "en": "e.g. ^FCHI, AIR.PA, EURUSD=X",
+        "fr": "ex. ^FCHI, AIR.PA, EURUSD=X",
+        "de": "z. B. ^GDAXI, SAP.DE, EURUSD=X",
+        "es": "p. ej. ^IBEX, SAN.MC, EURUSD=X"
       },
       "required": false,
-      "default": 300,
-      "min": 60,
-      "max": 3600
+      "default": "^FCHI, EURUSD=X, BTC-EUR"
+    },
+    {
+      "key": "price_alerts",
+      "type": "string",
+      "label": {
+        "en": "Price alerts",
+        "fr": "Alertes de cours",
+        "de": "Kursalarme",
+        "es": "Alertas de cotización"
+      },
+      "description": {
+        "en": "For the \"price alert\" scene trigger, separated by semicolons: a followed symbol, > or <, a price in its currency. Fires once, again after the price came back.",
+        "fr": "Pour le déclencheur de scène « alerte de cours », séparées par des points-virgules : un symbole suivi, > ou <, un cours dans sa devise. Se déclenche une fois, à nouveau après un retour du cours.",
+        "de": "Für den Szenenauslöser „Kursalarm“, durch Semikolons getrennt: ein verfolgtes Symbol, > oder <, ein Kurs in seiner Währung. Löst einmal aus, erneut nachdem der Kurs zurückkam.",
+        "es": "Para el desencadenante de escena «alerta de cotización», separadas por punto y coma: un símbolo seguido, > o <, un precio en su divisa. Se activa una vez, de nuevo tras volver el precio."
+      },
+      "placeholder": {
+        "en": "e.g. AIR.PA > 200; BTC-EUR < 50000",
+        "fr": "ex. AIR.PA > 200; BTC-EUR < 50000",
+        "de": "z. B. SAP.DE > 250; BTC-EUR < 50000",
+        "es": "p. ej. SAN.MC > 10; BTC-EUR < 50000"
+      },
+      "required": false,
+      "default": ""
+    },
+    {
+      "key": "refresh_interval",
+      "type": "select",
+      "label": {
+        "en": "Refresh interval",
+        "fr": "Fréquence de mise à jour",
+        "de": "Aktualisierungsintervall",
+        "es": "Intervalo de actualización"
+      },
+      "description": {
+        "en": "While the market is open. A closed market is read every 30 minutes. Yahoo prices are delayed anyway: no need to go faster.",
+        "fr": "Pendant l'ouverture du marché. Un marché fermé est lu toutes les 30 minutes. Les cours de Yahoo sont différés de toute façon : inutile d'aller plus vite.",
+        "de": "Während der Markt geöffnet ist. Ein geschlossener Markt wird alle 30 Minuten gelesen. Die Kurse von Yahoo sind ohnehin verzögert: schneller bringt nichts.",
+        "es": "Mientras el mercado está abierto. Un mercado cerrado se lee cada 30 minutos. Las cotizaciones de Yahoo son diferidas de todos modos: no hace falta ir más rápido."
+      },
+      "required": false,
+      "default": "10",
+      "options": [
+        {
+          "value": "5",
+          "label": {
+            "en": "5 minutes",
+            "fr": "5 minutes",
+            "de": "5 Minuten",
+            "es": "5 minutos"
+          }
+        },
+        {
+          "value": "10",
+          "label": {
+            "en": "10 minutes",
+            "fr": "10 minutes",
+            "de": "10 Minuten",
+            "es": "10 minutos"
+          }
+        },
+        {
+          "value": "15",
+          "label": {
+            "en": "15 minutes",
+            "fr": "15 minutes",
+            "de": "15 Minuten",
+            "es": "15 minutos"
+          }
+        },
+        {
+          "value": "30",
+          "label": {
+            "en": "30 minutes",
+            "fr": "30 minutes",
+            "de": "30 Minuten",
+            "es": "30 minutos"
+          }
+        },
+        {
+          "value": "60",
+          "label": {
+            "en": "60 minutes",
+            "fr": "60 minutes",
+            "de": "60 Minuten",
+            "es": "60 minutos"
+          }
+        }
+      ]
+    },
+    {
+      "key": "language",
+      "type": "select",
+      "label": {
+        "en": "Language of the texts",
+        "fr": "Langue des textes",
+        "de": "Sprache der Texte",
+        "es": "Idioma de los textos"
+      },
+      "description": {
+        "en": "Names of the features (at their creation) and texts sent to the scenes.",
+        "fr": "Noms des fonctionnalités (à leur création) et textes envoyés aux scènes.",
+        "de": "Namen der Funktionen (bei ihrer Erstellung) und Texte für die Szenen.",
+        "es": "Nombres de las funciones (al crearlas) y textos enviados a las escenas."
+      },
+      "required": false,
+      "default": "fr",
+      "options": [
+        {
+          "value": "en",
+          "label": {
+            "en": "English",
+            "fr": "Anglais",
+            "de": "Englisch",
+            "es": "Inglés"
+          }
+        },
+        {
+          "value": "fr",
+          "label": {
+            "en": "French",
+            "fr": "Français",
+            "de": "Französisch",
+            "es": "Francés"
+          }
+        },
+        {
+          "value": "de",
+          "label": {
+            "en": "German",
+            "fr": "Allemand",
+            "de": "Deutsch",
+            "es": "Alemán"
+          }
+        },
+        {
+          "value": "es",
+          "label": {
+            "en": "Spanish",
+            "fr": "Espagnol",
+            "de": "Spanisch",
+            "es": "Español"
+          }
+        }
+      ]
     }
   ],
   "actions": [
     {
-      "key": "test_weather",
-      "label": { "en": "Test the weather provider", "fr": "Tester le fournisseur météo" },
-      "timeout_seconds": 30
-    },
-    {
-      "key": "identify",
-      "label": { "en": "Identify a device", "fr": "Identifier un appareil" },
-      "fields": [
-        {
-          "key": "device",
-          "type": "select",
-          "source": "devices",
-          "label": { "en": "Device", "fr": "Appareil" },
-          "required": true
-        }
-      ]
+      "key": "check_now",
+      "label": {
+        "en": "Show the current prices",
+        "fr": "Afficher les cours actuels",
+        "de": "Aktuelle Kurse anzeigen",
+        "es": "Mostrar las cotizaciones actuales"
+      },
+      "timeout_seconds": 60
     }
   ],
   "scene_triggers": [
     {
-      "key": "motion_detected",
-      "label": { "en": "Motion detected", "fr": "Mouvement détecté" },
+      "key": "price_threshold",
+      "label": {
+        "en": "Stock market: price alert",
+        "fr": "Bourse : alerte de cours",
+        "de": "Börse: Kursalarm",
+        "es": "Bolsa: alerta de cotización"
+      },
       "description": {
-        "en": "A demo motion sensor saw a person or an animal move.",
-        "fr": "Un détecteur de démonstration a vu bouger une personne ou un animal."
+        "en": "A price alert of the configuration is crossed. Fires once, then again after the price came back past the threshold.",
+        "fr": "Une alerte de cours de la configuration est franchie. Se déclenche une fois, puis à nouveau après un retour du cours de l'autre côté du seuil.",
+        "de": "Ein Kursalarm der Konfiguration wird überschritten. Löst einmal aus, dann erneut, nachdem der Kurs wieder auf die andere Seite der Schwelle kam.",
+        "es": "Se cruza una alerta de cotización de la configuración. Se activa una vez y de nuevo cuando el precio vuelve al otro lado del umbral."
       },
       "fields": [
         {
           "key": "device",
           "type": "select",
           "source": "devices",
-          "label": { "en": "Sensor", "fr": "Détecteur" }
+          "label": {
+            "en": "Symbol",
+            "fr": "Symbole",
+            "de": "Symbol",
+            "es": "Símbolo"
+          }
         },
         {
-          "key": "target",
-          "type": "multi_select",
-          "label": { "en": "What moved", "fr": "Ce qui a bougé" },
+          "key": "direction",
+          "type": "select",
+          "label": {
+            "en": "Direction",
+            "fr": "Sens",
+            "de": "Richtung",
+            "es": "Sentido"
+          },
           "options": [
-            { "value": "person", "label": { "en": "Person", "fr": "Personne" } },
-            { "value": "animal", "label": { "en": "Animal", "fr": "Animal" } }
+            {
+              "value": "above",
+              "label": {
+                "en": "Rises above",
+                "fr": "Passe au-dessus",
+                "de": "Steigt über",
+                "es": "Sube por encima"
+              }
+            },
+            {
+              "value": "below",
+              "label": {
+                "en": "Falls below",
+                "fr": "Passe en dessous",
+                "de": "Fällt unter",
+                "es": "Baja por debajo"
+              }
+            }
           ]
         }
       ],
       "variables": [
         {
-          "key": "target",
+          "key": "symbol",
           "type": "string",
-          "label": { "en": "What moved", "fr": "Ce qui a bougé" }
+          "label": {
+            "en": "Symbol (AIR.PA…)",
+            "fr": "Symbole (AIR.PA…)",
+            "de": "Symbol (AIR.PA…)",
+            "es": "Símbolo (AIR.PA…)"
+          }
+        },
+        {
+          "key": "name",
+          "type": "string",
+          "label": {
+            "en": "Instrument name",
+            "fr": "Nom de l'instrument",
+            "de": "Name des Wertpapiers",
+            "es": "Nombre del instrumento"
+          }
+        },
+        {
+          "key": "price",
+          "type": "number",
+          "label": {
+            "en": "Price",
+            "fr": "Cours",
+            "de": "Kurs",
+            "es": "Cotización"
+          }
+        },
+        {
+          "key": "currency",
+          "type": "string",
+          "label": {
+            "en": "Currency (EUR, USD…)",
+            "fr": "Devise (EUR, USD…)",
+            "de": "Währung (EUR, USD…)",
+            "es": "Divisa (EUR, USD…)"
+          }
+        },
+        {
+          "key": "threshold",
+          "type": "number",
+          "label": {
+            "en": "Threshold",
+            "fr": "Seuil",
+            "de": "Schwelle",
+            "es": "Umbral"
+          }
+        },
+        {
+          "key": "direction",
+          "type": "string",
+          "label": {
+            "en": "Direction (above, below)",
+            "fr": "Sens (above, below)",
+            "de": "Richtung (above, below)",
+            "es": "Sentido (above, below)"
+          }
+        },
+        {
+          "key": "text",
+          "type": "string",
+          "label": {
+            "en": "Sentence to send or read",
+            "fr": "Phrase à envoyer ou à lire",
+            "de": "Satz zum Senden oder Vorlesen",
+            "es": "Frase para enviar o leer"
+          }
+        }
+      ]
+    },
+    {
+      "key": "daily_move",
+      "label": {
+        "en": "Stock market: big daily move",
+        "fr": "Bourse : forte variation du jour",
+        "de": "Börse: starke Tagesbewegung",
+        "es": "Bolsa: fuerte variación del día"
+      },
+      "description": {
+        "en": "The change of the day since the previous close reaches the chosen level, up or down. Once per level and per session.",
+        "fr": "La variation du jour depuis la clôture précédente atteint le niveau choisi, à la hausse ou à la baisse. Une fois par niveau et par séance.",
+        "de": "Die Tagesveränderung seit dem Vortagesschluss erreicht die gewählte Stufe, nach oben oder unten. Einmal pro Stufe und Handelstag.",
+        "es": "La variación del día desde el cierre anterior alcanza el nivel elegido, al alza o a la baja. Una vez por nivel y por sesión."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "Symbol",
+            "fr": "Symbole",
+            "de": "Symbol",
+            "es": "Símbolo"
+          }
+        },
+        {
+          "key": "direction",
+          "type": "select",
+          "label": {
+            "en": "Direction",
+            "fr": "Sens",
+            "de": "Richtung",
+            "es": "Sentido"
+          },
+          "options": [
+            {
+              "value": "up",
+              "label": {
+                "en": "Up",
+                "fr": "Hausse",
+                "de": "Anstieg",
+                "es": "Subida"
+              }
+            },
+            {
+              "value": "down",
+              "label": {
+                "en": "Down",
+                "fr": "Baisse",
+                "de": "Rückgang",
+                "es": "Bajada"
+              }
+            }
+          ]
+        },
+        {
+          "key": "threshold",
+          "type": "select",
+          "required": true,
+          "default": "3",
+          "label": {
+            "en": "Level reached",
+            "fr": "Niveau atteint",
+            "de": "Erreichte Stufe",
+            "es": "Nivel alcanzado"
+          },
+          "options": [
+            {
+              "value": "1",
+              "label": {
+                "en": "1 %",
+                "fr": "1 %",
+                "de": "1 %",
+                "es": "1 %"
+              }
+            },
+            {
+              "value": "2",
+              "label": {
+                "en": "2 %",
+                "fr": "2 %",
+                "de": "2 %",
+                "es": "2 %"
+              }
+            },
+            {
+              "value": "3",
+              "label": {
+                "en": "3 %",
+                "fr": "3 %",
+                "de": "3 %",
+                "es": "3 %"
+              }
+            },
+            {
+              "value": "5",
+              "label": {
+                "en": "5 %",
+                "fr": "5 %",
+                "de": "5 %",
+                "es": "5 %"
+              }
+            },
+            {
+              "value": "10",
+              "label": {
+                "en": "10 %",
+                "fr": "10 %",
+                "de": "10 %",
+                "es": "10 %"
+              }
+            }
+          ]
+        }
+      ],
+      "variables": [
+        {
+          "key": "symbol",
+          "type": "string",
+          "label": {
+            "en": "Symbol (AIR.PA…)",
+            "fr": "Symbole (AIR.PA…)",
+            "de": "Symbol (AIR.PA…)",
+            "es": "Símbolo (AIR.PA…)"
+          }
+        },
+        {
+          "key": "name",
+          "type": "string",
+          "label": {
+            "en": "Instrument name",
+            "fr": "Nom de l'instrument",
+            "de": "Name des Wertpapiers",
+            "es": "Nombre del instrumento"
+          }
+        },
+        {
+          "key": "change_percent",
+          "type": "number",
+          "label": {
+            "en": "Change today (%)",
+            "fr": "Variation du jour (%)",
+            "de": "Veränderung heute (%)",
+            "es": "Variación del día (%)"
+          }
+        },
+        {
+          "key": "price",
+          "type": "number",
+          "label": {
+            "en": "Price",
+            "fr": "Cours",
+            "de": "Kurs",
+            "es": "Cotización"
+          }
+        },
+        {
+          "key": "currency",
+          "type": "string",
+          "label": {
+            "en": "Currency (EUR, USD…)",
+            "fr": "Devise (EUR, USD…)",
+            "de": "Währung (EUR, USD…)",
+            "es": "Divisa (EUR, USD…)"
+          }
+        },
+        {
+          "key": "threshold",
+          "type": "number",
+          "label": {
+            "en": "Level reached (%)",
+            "fr": "Niveau atteint (%)",
+            "de": "Erreichte Stufe (%)",
+            "es": "Nivel alcanzado (%)"
+          }
+        },
+        {
+          "key": "direction",
+          "type": "string",
+          "label": {
+            "en": "Direction (up, down)",
+            "fr": "Sens (up, down)",
+            "de": "Richtung (up, down)",
+            "es": "Sentido (up, down)"
+          }
+        },
+        {
+          "key": "text",
+          "type": "string",
+          "label": {
+            "en": "Sentence to send or read",
+            "fr": "Phrase à envoyer ou à lire",
+            "de": "Satz zum Senden oder Vorlesen",
+            "es": "Frase para enviar o leer"
+          }
         }
       ]
     }
   ],
   "scene_actions": [
     {
-      "key": "identify_device",
-      "label": { "en": "Identify a device", "fr": "Identifier un appareil" },
-      "description": {
-        "en": "Make a device signal itself (the demo light blinks).",
-        "fr": "Fait se signaler un appareil (la lampe de démonstration clignote)."
+      "key": "read_quote",
+      "label": {
+        "en": "Stock market: read a price",
+        "fr": "Bourse : lire un cours",
+        "de": "Börse: einen Kurs lesen",
+        "es": "Bolsa: leer una cotización"
       },
-      "timeout_seconds": 15,
+      "description": {
+        "en": "The price of a symbol and its change today, as a sentence to send by message or read aloud.",
+        "fr": "Le cours d'un symbole et sa variation du jour, en une phrase à envoyer par message ou à lire à voix haute.",
+        "de": "Der Kurs eines Symbols und seine Tagesveränderung, als Satz zum Senden per Nachricht oder zum Vorlesen.",
+        "es": "La cotización de un símbolo y su variación del día, en una frase para enviar por mensaje o leer en voz alta."
+      },
+      "timeout_seconds": 60,
       "fields": [
         {
           "key": "device",
           "type": "select",
           "source": "devices",
-          "label": { "en": "Device", "fr": "Appareil" },
+          "label": {
+            "en": "Symbol",
+            "fr": "Symbole",
+            "de": "Symbol",
+            "es": "Símbolo"
+          },
           "required": true
         }
       ],
       "outputs": [
         {
-          "key": "signalled",
-          "type": "boolean",
-          "label": { "en": "Device signalled", "fr": "Appareil signalé" }
+          "key": "text",
+          "type": "string",
+          "label": {
+            "en": "Sentence to send or read",
+            "fr": "Phrase à envoyer ou à lire",
+            "de": "Satz zum Senden oder Vorlesen",
+            "es": "Frase para enviar o leer"
+          }
+        },
+        {
+          "key": "price",
+          "type": "number",
+          "label": {
+            "en": "Price",
+            "fr": "Cours",
+            "de": "Kurs",
+            "es": "Cotización"
+          }
+        },
+        {
+          "key": "change_percent",
+          "type": "number",
+          "label": {
+            "en": "Change today (%)",
+            "fr": "Variation du jour (%)",
+            "de": "Veränderung heute (%)",
+            "es": "Variación del día (%)"
+          }
+        },
+        {
+          "key": "currency",
+          "type": "string",
+          "label": {
+            "en": "Currency (EUR, USD…)",
+            "fr": "Devise (EUR, USD…)",
+            "de": "Währung (EUR, USD…)",
+            "es": "Divisa (EUR, USD…)"
+          }
+        }
+      ]
+    },
+    {
+      "key": "read_portfolio",
+      "label": {
+        "en": "Stock market: read all prices",
+        "fr": "Bourse : lire tous les cours",
+        "de": "Börse: alle Kurse lesen",
+        "es": "Bolsa: leer todas las cotizaciones"
+      },
+      "description": {
+        "en": "Every followed symbol with its price and change today, as one text.",
+        "fr": "Tous les symboles suivis avec leur cours et leur variation du jour, en un texte.",
+        "de": "Alle verfolgten Symbole mit Kurs und Tagesveränderung, als ein Text.",
+        "es": "Todos los símbolos seguidos con su cotización y variación del día, en un texto."
+      },
+      "timeout_seconds": 60,
+      "outputs": [
+        {
+          "key": "text",
+          "type": "string",
+          "label": {
+            "en": "Sentence to send or read",
+            "fr": "Phrase à envoyer ou à lire",
+            "de": "Satz zum Senden oder Vorlesen",
+            "es": "Frase para enviar o leer"
+          }
+        },
+        {
+          "key": "count",
+          "type": "number",
+          "label": {
+            "en": "Number of symbols",
+            "fr": "Nombre de symboles",
+            "de": "Anzahl der Symbole",
+            "es": "Número de símbolos"
+          }
         }
       ]
     }
   ],
   "widgets": [
     {
-      "key": "demo_status",
-      "label": { "en": "Demo status", "fr": "État de la démo" },
-      "description": {
-        "en": "Live temperature and plug power, plug connection and observed location.",
-        "fr": "Température et puissance en direct, connexion de la prise, position observée."
+      "key": "quotes",
+      "label": {
+        "en": "Stock prices",
+        "fr": "Cours de bourse",
+        "de": "Börsenkurse",
+        "es": "Cotizaciones"
       },
-      "icon": "activity",
-      "action_timeout_seconds": 15
+      "description": {
+        "en": "Followed symbols with their price and change today, green up, red down.",
+        "fr": "Symboles suivis avec leur cours et leur variation du jour, vert en hausse, rouge en baisse.",
+        "de": "Verfolgte Symbole mit Kurs und Tagesveränderung, grün steigend, rot fallend.",
+        "es": "Símbolos seguidos con su cotización y variación del día, verde al alza, rojo a la baja."
+      },
+      "icon": "trending-up"
     }
   ]
 }

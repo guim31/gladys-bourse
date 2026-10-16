@@ -1,0 +1,63 @@
+{
+  "chart": {
+    "result": [
+      {
+        "meta": {
+          "currency": "JPY",
+          "symbol": "USDJPY=X",
+          "exchangeName": "CCY",
+          "fullExchangeName": "CCY",
+          "instrumentType": "CURRENCY",
+          "regularMarketTime": 1792121995,
+          "gmtoffset": 3600,
+          "timezone": "BST",
+          "exchangeTimezoneName": "Europe/London",
+          "regularMarketPrice": 157.986,
+          "regularMarketChangePercent": 0.0089,
+          "fulldayChange": 0.014,
+          "regularMarketDayHigh": 158.186,
+          "regularMarketDayLow": 157.874,
+          "longName": "USD/JPY",
+          "shortName": "USD/JPY",
+          "chartPreviousClose": 157.972,
+          "priceHint": 4,
+          "currentTradingPeriod": {
+            "pre": {
+              "timezone": "BST",
+              "end": 1792105200,
+              "start": 1792105200,
+              "gmtoffset": 3600
+            },
+            "regular": {
+              "timezone": "BST",
+              "end": 1792191540,
+              "start": 1792105200,
+              "gmtoffset": 3600
+            },
+            "post": {
+              "timezone": "BST",
+              "end": 1792191540,
+              "start": 1792191540,
+              "gmtoffset": 3600
+            }
+          },
+          "dataGranularity": "1d",
+          "range": "1d"
+        },
+        "timestamp": [1792121995],
+        "indicators": {
+          "quote": [
+            {
+              "volume": [0],
+              "close": [157.985992],
+              "high": [158.186005],
+              "open": [157.972],
+              "low": [157.873993]
+            }
+          ]
+        }
+      }
+    ],
+    "error": null
+  }
+}

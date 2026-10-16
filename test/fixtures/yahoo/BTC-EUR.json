@@ -1,0 +1,63 @@
+{
+  "chart": {
+    "result": [
+      {
+        "meta": {
+          "currency": "EUR",
+          "symbol": "BTC-EUR",
+          "exchangeName": "CCC",
+          "fullExchangeName": "CCC",
+          "instrumentType": "CRYPTOCURRENCY",
+          "regularMarketTime": 1792121901,
+          "gmtoffset": 0,
+          "timezone": "UTC",
+          "exchangeTimezoneName": "UTC",
+          "regularMarketPrice": 72878.16,
+          "regularMarketChangePercent": 1.28,
+          "fulldayChange": 920.93,
+          "regularMarketDayHigh": 73444.43,
+          "regularMarketDayLow": 72876.18,
+          "longName": "Bitcoin EUR",
+          "shortName": "Bitcoin EUR",
+          "chartPreviousClose": 73249.95,
+          "priceHint": 2,
+          "currentTradingPeriod": {
+            "pre": {
+              "timezone": "UTC",
+              "start": 1792108800,
+              "end": 1792108800,
+              "gmtoffset": 0
+            },
+            "regular": {
+              "timezone": "UTC",
+              "start": 1792108800,
+              "end": 1792195140,
+              "gmtoffset": 0
+            },
+            "post": {
+              "timezone": "UTC",
+              "start": 1792195140,
+              "end": 1792195140,
+              "gmtoffset": 0
+            }
+          },
+          "dataGranularity": "1d",
+          "range": "1d"
+        },
+        "timestamp": [1792121901],
+        "indicators": {
+          "quote": [
+            {
+              "close": [72878.15625],
+              "high": [73444.429688],
+              "low": [72876.179688],
+              "volume": [31489533952],
+              "open": [73249.953125]
+            }
+          ]
+        }
+      }
+    ],
+    "error": null
+  }
+}
