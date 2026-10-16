@@ -1,67 +1,145 @@
-# Template de démonstration
+# Yahoo Finance
 
-Ceci est la documentation utilisateur de l'intégration. Gladys ré-héberge ce
-fichier et affiche un lien **Documentation** permanent vers lui dans l'écran
-de configuration (dans la langue de l'utilisateur, avec l'anglais en repli) —
-c'est au moment de configurer que l'utilisateur en a le plus besoin. Gardez
-les courtes indications d'accueil dans les blocs `section` du `config_schema`
-du manifest ; mettez ici le pas-à-pas détaillé (captures d'écran, dépannage…).
+Suivez des cours dans Gladys : actions, indices (CAC 40, S&P 500…), ETF, paires de devises (EUR/USD…) et
+cryptomonnaies (BTC-EUR…), lus sur les pages publiques de [Yahoo Finance](https://finance.yahoo.com). Pas de
+compte, pas de clé d'API.
+
+Les cours sont **différés** (souvent de 15 minutes, selon la place) et **indicatifs** : cette intégration sert
+à garder un œil sur les marchés depuis la maison, pas pour passer des ordres. Non affiliée à Yahoo.
 
 ## Ce que vous obtenez
 
-Six appareils de démonstration apparaissent après l'installation : une
-station météo (vraies données Open-Meteo), un interrupteur, une lampe
-variable, une prise connectée avec mesure de puissance, un détecteur de
-mouvement et une caméra.
+- Un **appareil par symbole**, au nom de l'instrument (`CAC 40 (^FCHI)`) : cours, variation du jour (en
+  valeur et en pourcentage), clôture précédente, devise et état du marché (ouvert ou fermé), avec leur
+  historique.
+- Un **widget de tableau de bord** listant les symboles suivis avec leur cours et leur variation du jour,
+  vert en hausse, rouge en baisse.
+- Deux **déclencheurs de scène** : une alerte de cours franchie (`AIR.PA > 200`), et une forte variation du
+  jour (1, 2, 3, 5 ou 10 %, à la hausse ou à la baisse).
+- Deux **actions de scène** : lire le cours d'un symbole, ou de tous les symboles suivis, en une phrase à
+  envoyer par message ou à faire lire à voix haute.
+
+## Prérequis
+
+- Gladys Assistant 5.1 ou plus récent.
+- Un accès Internet depuis la machine de Gladys (l'intégration lit `query1.finance.yahoo.com`).
 
 ## Configuration
 
-1. Ouvrez l'onglet **Configuration** de l'intégration.
-2. Renseignez la **latitude** et la **longitude** que la station météo de
-   démonstration doit observer (Paris par défaut), et choisissez votre unité
-   de température. L'**intervalle de rafraîchissement** règle la fréquence
-   de lecture de la station météo et de la puissance de la prise : toutes
-   les 5 minutes par défaut, toutes les minutes au plus.
-3. Enregistrez : les appareils apparaissent dans l'onglet **Découverte**,
-   prêts à être ajoutés.
+### Réglages
 
-Le réglage **Préférer la connexion locale** pilote la prise de
-démonstration : elle affiche en badge le canal réellement utilisé (local ou
-cloud), avec un point orange quand elle fonctionne en mode dégradé (local
-refusé, bascule cloud).
+| Réglage                  | Effet                                                                                                                           |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
+| Symboles                 | Symboles Yahoo Finance séparés par des virgules, 20 au plus. Par défaut : `^FCHI, EURUSD=X, BTC-EUR`.                           |
+| Alertes de cours         | Pour le déclencheur « alerte de cours », séparées par des points-virgules : `AIR.PA > 200; BTC-EUR < 50000` (virgule acceptée). |
+| Fréquence de mise à jour | 5 à 60 minutes (10 par défaut) pendant l'ouverture du marché.                                                                   |
+| Langue des textes        | Noms des fonctionnalités (à leur création) et textes envoyés aux scènes. Français par défaut.                                   |
 
-## Actions
+Enregistrez, puis ouvrez l'onglet **Découverte** de l'intégration et créez les appareils voulus. Un symbole
+ajouté plus tard y apparaît après la lecture suivante.
 
-- **Tester le fournisseur météo** — effectue une requête en direct vers
-  Open-Meteo et affiche la température et l'humidité actuelles sous le
-  bouton.
-- **Identifier un appareil** — choisissez un de vos appareils dans la liste
-  et il se signale (la lampe de démonstration « clignote » dans les logs).
+Le bouton **Afficher les cours actuels** de la configuration lit tous les symboles d'un coup et dit lesquels
+Yahoo ne connaît pas.
 
-## Scènes
+### Trouver un symbole
 
-L'intégration ajoute ses propres cartes à l'éditeur de scènes (Gladys 5.1
-ou plus récent), dans la catégorie **Intégrations** :
+Cherchez le nom sur [finance.yahoo.com](https://finance.yahoo.com) : le symbole figure à côté. Quelques
+exemples :
 
-- **Mouvement détecté** (déclencheur) — lance la scène quand un détecteur
-  de démonstration voit bouger quelque chose. Choisissez éventuellement le
-  détecteur et ce qui a bougé (personne, animal) ; laissés vides, toute
-  détection correspond. Les actions suivantes peuvent lire ce qui a bougé
-  avec `{{triggerEvent.data.target}}`.
-- **Identifier un appareil** (action) — fait se signaler l'appareil choisi.
-  Elle indique si l'appareil a pu se signaler, pour que les actions
-  suivantes puissent en dépendre.
+| Type              | Symboles                                                                |
+| ----------------- | ----------------------------------------------------------------------- |
+| Actions           | `AIR.PA` (Airbus, Paris), `SAP.DE` (SAP, Xetra), `AAPL` (Apple, Nasdaq) |
+| Indices           | `^FCHI` (CAC 40), `^GDAXI` (DAX), `^IBEX` (IBEX 35), `^GSPC` (S&P 500)  |
+| ETF               | `CW8.PA` (Amundi MSCI World), `IWDA.AS` (iShares Core MSCI World)       |
+| Paires de devises | `EURUSD=X` (un euro en dollars), `EURGBP=X`, `EURCHF=X`                 |
+| Cryptomonnaies    | `BTC-EUR`, `ETH-EUR`, `BTC-USD`                                         |
 
-## Tableau de bord
+Les actions de Londres sont cotées en pence (`GBp`) : la fonctionnalité de cours n'a alors pas d'unité, et la
+fonctionnalité de devise indique `GBp`.
 
-Ajoutez le widget **État de la démo** à un tableau de bord : il affiche en
-direct la température de la station météo et la puissance de la prise du
-bureau, la connexion utilisée par la prise (en orange si dégradée) et la
-position observée. Son bouton **Identifier la lampe** fait se signaler la
-lampe de démonstration.
+## Appareils
+
+| Fonctionnalité        | Contenu                                                                                             |
+| --------------------- | --------------------------------------------------------------------------------------------------- |
+| Cours                 | Dernier cours, en euros, dollars ou livres quand c'est la devise.                                   |
+| Variation du jour     | Cours moins la clôture précédente.                                                                  |
+| Variation du jour (%) | La même, en pourcentage.                                                                            |
+| Clôture précédente    | La référence de la variation. Pour une cryptomonnaie, le cours à 00:00 UTC.                         |
+| Devise                | Le code de devise donné par Yahoo (`EUR`, `USD`, `GBp`, `JPY`…).                                    |
+| Marché                | Ouvert ou Fermé. Une paire de devises s'échange 24 h sur 24 en semaine, une cryptomonnaie toujours. |
+
+Les noms des fonctionnalités sont figés à la création de l'appareil : changez la langue avant de le créer.
+
+## Widget de tableau de bord
+
+**Cours de bourse** liste les symboles suivis (8 au plus) dans l'ordre de la configuration : l'instrument, son
+cours et l'état du marché, et la variation du jour en pastille colorée. Touchez une ligne pour voir le
+symbole, la clôture précédente, la variation et l'heure du cours, avec un lien vers Yahoo Finance.
+
+## Déclencheurs de scène
+
+**Bourse : alerte de cours** — une alerte de cours de la configuration est franchie. Filtres : le symbole (un
+appareil) et le sens (passe au-dessus, passe en dessous). Il se déclenche une fois, puis à nouveau seulement
+après un retour du cours de 0,5 % de l'autre côté du seuil : un cours qui hésite autour du seuil n'inonde pas
+votre téléphone. Une alerte déjà franchie quand vous l'enregistrez ne déclenche rien avant d'être franchie à
+nouveau.
+
+**Bourse : forte variation du jour** — la variation depuis la clôture précédente atteint le niveau choisi : 1,
+2, 3, 5 ou 10 %, à la hausse ou à la baisse. Une fois par niveau et par séance. Filtres : le symbole, le sens
+et le niveau.
+
+Les deux transmettent aux actions : le symbole, le nom de l'instrument, le cours, la devise, le seuil ou le
+niveau, le sens et une phrase toute prête. Ce qui a déjà été déclenché est gardé : un redémarrage ne
+déclenche rien deux fois.
+
+## Actions de scène
+
+**Bourse : lire un cours** — choisissez un symbole ; l'action donne une phrase (« CAC 40 : 7 934,70 € (+0,78 %
+aujourd'hui) »), le cours, la variation en pourcentage et la devise.
+
+**Bourse : lire tous les cours** — tous les symboles suivis en un texte, et leur nombre.
+
+Les deux relisent Yahoo quand la dernière lecture date de plus d'une période de mise à jour.
+
+## Exemples de scènes
+
+- **Résumé du matin** : à 9 h 30 en semaine, _lire tous les cours_ puis envoyer le texte par Telegram.
+- **Objectif atteint** : avec l'alerte `AIR.PA > 200`, sur _alerte de cours_ pour Airbus, envoyer « {{text}} »
+  sur votre téléphone.
+- **Tempête crypto** : sur _forte variation du jour_ pour BTC-EUR, à la baisse, 10 %, faire clignoter en rouge
+  la lampe du salon.
+
+## Source des données, conditions et limites d'utilisation
+
+L'intégration lit le point d'accès public « chart » de Yahoo Finance, une requête par symbole, espacées :
+
+- pendant l'ouverture d'un marché, à chaque période de mise à jour ;
+- marché fermé, toutes les 30 minutes (son cours ne bouge pas) ;
+- un symbole inconnu, toutes les 6 heures.
+
+Cet accès est **non officiel** : Yahoo ne publie pas d'API pour lui et peut le modifier ou le refuser à tout
+moment. Quand Yahoo refuse les requêtes (HTTP 429), l'intégration attend deux périodes, puis plus longtemps à
+chaque nouveau refus, jusqu'à une heure. Les données sont à usage personnel, selon les
+[conditions d'utilisation de Yahoo](https://legal.yahoo.com/us/en/yahoo/terms/otos/index.html) : cours
+différés et indicatifs, pas pour passer des ordres.
 
 ## Dépannage
 
-L'intégration journalise tout ce qu'elle fait : consultez les logs de
-l'intégration depuis l'interface Gladys (ou `docker logs` sur l'hôte) avec
-`LOG_LEVEL=debug` pour le détail complet.
+- **Aucun appareil dans l'onglet Découverte** : vérifiez les symboles, puis utilisez **Afficher les cours
+  actuels** : il liste ceux que Yahoo ne connaît pas. L'état de l'intégration le dit aussi.
+- **« Yahoo Finance refuse les requêtes pour le moment »** : patientez, les lectures reprennent seules.
+  Réduisez le nombre de symboles ou allongez la fréquence si cela revient souvent.
+- **Le marché reste « Fermé » pendant la séance** : la place est peut-être fériée, ou l'instrument ne s'est pas
+  encore échangé aujourd'hui.
+- **Une alerte de cours ne se déclenche pas** : le symbole doit aussi figurer dans la liste des symboles, et
+  l'alerte doit être franchie après son enregistrement.
+- Journaux : `LOG_LEVEL=debug` montre chaque lecture.
+
+## Limites
+
+- Cours différés et indicatifs ; aucun historique importé (l'historique commence à la création de l'appareil).
+- Un cours par symbole : ni quantités ni valeur de portefeuille.
+- 20 symboles au plus.
+- La variation d'une cryptomonnaie se compte depuis 00:00 UTC, pas sur 24 heures.
+- Le premier jour d'un symbole, une variation déjà là à la première lecture de la séance ne déclenche rien.
+- Accès non officiel à Yahoo : il peut cesser de fonctionner sans préavis.

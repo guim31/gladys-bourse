@@ -1,0 +1,63 @@
+{
+  "chart": {
+    "result": [
+      {
+        "meta": {
+          "currency": "EUR",
+          "symbol": "CW8.PA",
+          "exchangeName": "PAR",
+          "fullExchangeName": "Paris",
+          "instrumentType": "ETF",
+          "regularMarketTime": 1792078514,
+          "gmtoffset": 7200,
+          "timezone": "CEST",
+          "exchangeTimezoneName": "Europe/Paris",
+          "regularMarketPrice": 710.53,
+          "regularMarketChangePercent": -0.862,
+          "fulldayChange": -6.18,
+          "regularMarketDayHigh": 711.94,
+          "regularMarketDayLow": 705.03,
+          "longName": "Amundi Index Solutions - Amundi MSCI World Swap UCITS ETF EUR Acc",
+          "shortName": "Amundi MSCI World Swap UCITS ET",
+          "chartPreviousClose": 716.71,
+          "priceHint": 2,
+          "currentTradingPeriod": {
+            "pre": {
+              "timezone": "CEST",
+              "start": 1792134000,
+              "end": 1792134000,
+              "gmtoffset": 7200
+            },
+            "regular": {
+              "timezone": "CEST",
+              "start": 1792134000,
+              "end": 1792164600,
+              "gmtoffset": 7200
+            },
+            "post": {
+              "timezone": "CEST",
+              "start": 1792164600,
+              "end": 1792164600,
+              "gmtoffset": 7200
+            }
+          },
+          "dataGranularity": "1d",
+          "range": "1d"
+        },
+        "timestamp": [1792078514],
+        "indicators": {
+          "quote": [
+            {
+              "open": [706.650024],
+              "volume": [10005],
+              "high": [711.940002],
+              "close": [710.530029],
+              "low": [705.030029]
+            }
+          ]
+        }
+      }
+    ],
+    "error": null
+  }
+}

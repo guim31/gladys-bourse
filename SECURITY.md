@@ -30,6 +30,13 @@ Gladys before reporting a problem.
 
 In scope: the code of this repository and the Docker image it publishes.
 
+The integration needs no account and stores no secret. It reads the public "chart" endpoint of
+Yahoo Finance (`query1.finance.yahoo.com`, HTTPS, no key, no cookie) for the symbols of the
+configuration. Under `/data` it keeps one file, `bourse.json`: the state of the price alerts
+(armed or fired) and the levels of the daily moves already announced, keyed by symbol. Nothing
+about the user, no holdings. Symbols and alerts are not secret but may tell what you own: they
+appear in the logs only for an unknown symbol, an alert fired or a configuration problem.
+
 Out of scope: Gladys Assistant itself (see its
 [security policy](https://github.com/GladysAssistant/Gladys/security/policy)),
-and the third-party services and devices the integration talks to.
+and the Yahoo Finance service.

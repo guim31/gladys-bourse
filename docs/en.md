@@ -1,61 +1,141 @@
-# Demo Devices Template
+# Yahoo Finance
 
-This is the user documentation of the integration. Gladys re-hosts this file
-and shows a permanent **Documentation** link to it in the Configuration screen
-(in the user's language, with English as the fallback) — it is when
-configuring that the user needs it most. Keep the short onboarding hints in
-the `section` blocks of the manifest `config_schema`; put the long
-step-by-step (screenshots, troubleshooting…) here.
+Follow prices in Gladys: shares, indices (CAC 40, S&P 500…), ETFs, currency pairs (EUR/USD…) and
+cryptocurrencies (BTC-EUR…), read from the public pages of [Yahoo Finance](https://finance.yahoo.com). No
+account, no API key.
+
+Prices are **delayed** (often by 15 minutes, depending on the exchange) and **indicative**: this integration
+is for keeping an eye on the markets from your home, not for trading. Not affiliated with Yahoo.
 
 ## What you get
 
-Six demo devices show up after installation: a weather station (real data
-from Open-Meteo), a switch, a dimmable light, a smart plug with power
-metering, a motion sensor and a camera.
+- One **device per symbol**, named after the instrument (`CAC 40 (^FCHI)`): price, change today (in value
+  and in percent), previous close, currency and state of the market (open or closed), with their history.
+- A **dashboard widget** listing the followed symbols with their price and change today, green up, red
+  down.
+- Two **scene triggers**: a price alert crossed (`AIR.PA > 200`), and a big move of the day (1, 2, 3, 5 or
+  10 %, up or down).
+- Two **scene actions**: read the price of one symbol, or of every followed symbol, as a sentence to send by
+  message or have it read aloud.
+
+## Requirements
+
+- Gladys Assistant 5.1 or later.
+- Internet access from the Gladys host (the integration reads `query1.finance.yahoo.com`).
 
 ## Configuration
 
-1. Open the **Configuration** tab of the integration.
-2. Set the **latitude** and **longitude** the demo weather station should
-   observe (they default to Paris), and pick your temperature unit.
-   The **refresh interval** sets how often the weather station and the
-   plug's power are read: every 5 minutes by default, every minute at most.
-3. Save: the devices appear in the **Discovery** tab, ready to be added.
+### Settings
 
-The **Prefer the local connection** toggle drives the demo plug: it reports
-the channel it actually uses as a badge (local or cloud), with an orange dot
-when it runs degraded (local refused, cloud fallback).
+| Setting          | What it does                                                                                                      |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Symbols          | Yahoo Finance symbols separated by commas, 20 at most. By default: `^FCHI, EURUSD=X, BTC-EUR`.                    |
+| Price alerts     | For the "price alert" trigger, separated by semicolons: `AIR.PA > 200; BTC-EUR < 50000` (decimal comma accepted). |
+| Refresh interval | 5 to 60 minutes (10 by default) while the market is open.                                                         |
+| Language         | Names of the features (at their creation) and texts sent to the scenes. French by default.                        |
 
-## Actions
+Save, then open the **Discover** tab of the integration and create the devices you want. A symbol added later
+appears there after the next reading.
 
-- **Test the weather provider** — performs a live request to Open-Meteo and
-  shows the current temperature and humidity under the button.
-- **Identify a device** — pick one of your devices in the list and it will
-  signal itself (the demo light "blinks" in the logs).
+The **Show the current prices** button of the configuration reads every symbol at once and says which ones
+Yahoo does not know.
 
-## Scenes
+### Finding a symbol
 
-The integration adds its own cards to the scene editor (Gladys 5.1 or
-later), under the **Integrations** category:
+Search the name on [finance.yahoo.com](https://finance.yahoo.com): the symbol is shown next to it. A few
+examples:
 
-- **Motion detected** (trigger) — starts the scene when a demo motion sensor
-  sees something move. Optionally pick the sensor and what moved (person,
-  animal); left empty, any detection matches. The following actions can
-  read what moved with `{{triggerEvent.data.target}}`.
-- **Identify a device** (action) — makes the chosen device signal itself.
-  It returns whether the device could signal itself, so the following
-  actions can depend on it.
+| Kind             | Symbols                                                                 |
+| ---------------- | ----------------------------------------------------------------------- |
+| Shares           | `AIR.PA` (Airbus, Paris), `SAP.DE` (SAP, Xetra), `AAPL` (Apple, Nasdaq) |
+| Indices          | `^FCHI` (CAC 40), `^GDAXI` (DAX), `^IBEX` (IBEX 35), `^GSPC` (S&P 500)  |
+| ETFs             | `CW8.PA` (Amundi MSCI World), `IWDA.AS` (iShares Core MSCI World)       |
+| Currency pairs   | `EURUSD=X` (one euro in dollars), `EURGBP=X`, `EURCHF=X`                |
+| Cryptocurrencies | `BTC-EUR`, `ETH-EUR`, `BTC-USD`                                         |
 
-## Dashboard
+London shares are quoted in pence (`GBp`): the price feature then has no unit, and the currency feature says
+`GBp`.
 
-Add the **Demo status** widget to a dashboard: it shows the live
-temperature of the weather station and the power of the office plug, the
-connection the plug currently uses (orange when degraded) and the observed
-location. Its **Identify the light** button makes the demo light signal
-itself.
+## Devices
+
+| Feature          | Content                                                                                     |
+| ---------------- | ------------------------------------------------------------------------------------------- |
+| Price            | Last price, in euros, dollars or pounds when the currency is one of them.                   |
+| Change today     | Price minus the previous close.                                                             |
+| Change today (%) | The same, in percent.                                                                       |
+| Previous close   | The reference of the change. For a cryptocurrency, the price at 00:00 UTC.                  |
+| Currency         | The currency code given by Yahoo (`EUR`, `USD`, `GBp`, `JPY`…).                             |
+| Market           | Open or Closed. A currency pair trades 24 hours a day on weekdays, a cryptocurrency always. |
+
+The names of the features are frozen when the device is created: change the language before creating it.
+
+## Dashboard widget
+
+**Stock prices** lists the followed symbols (8 at most) in the order of the configuration: the instrument,
+its price and the state of the market, and the change today as a coloured badge. Tap a row to see the
+symbol, the previous close, the change and the time of the price, with a link to Yahoo Finance.
+
+## Scene triggers
+
+**Stock market: price alert** — a price alert of the configuration is crossed. Filters: the symbol (a device)
+and the direction (rises above, falls below). It fires once, then again only after the price came back past
+the threshold by 0.5 %: a price hovering around the threshold does not flood your phone. An alert already
+crossed when you save it fires nothing until it is crossed again.
+
+**Stock market: big daily move** — the change since the previous close reaches the chosen level: 1, 2, 3, 5
+or 10 %, up or down. Once per level and per session. Filters: the symbol, the direction and the level.
+
+Both pass to the actions: the symbol, the name of the instrument, the price, the currency, the threshold or
+level, the direction and a ready-made sentence. What was already fired is kept, so a restart fires nothing
+twice.
+
+## Scene actions
+
+**Stock market: read a price** — choose a symbol; the action gives a sentence ("CAC 40: €7,934.70 (+0.78%
+today)"), the price, the change in percent and the currency.
+
+**Stock market: read all prices** — every followed symbol in one text, and their number.
+
+Both read Yahoo again when the last reading is older than the refresh interval.
+
+## Scene examples
+
+- **Morning summary**: at 9:30 on weekdays, _read all prices_ then send the text by Telegram.
+- **Target reached**: with the alert `AIR.PA > 200`, on _price alert_ for Airbus, send "{{text}}" to your
+  phone.
+- **Crypto storm**: on _big daily move_ for BTC-EUR, down, 10 %, make the living room lamp blink red.
+
+## Data source, terms and limits of use
+
+The integration reads the public "chart" endpoint of Yahoo Finance, one request per symbol, spaced out:
+
+- while a market is open, at every refresh interval;
+- while it is closed, every 30 minutes (its price does not move);
+- an unknown symbol, every 6 hours.
+
+This access is **unofficial**: Yahoo publishes no API for it and may change or refuse it at any time. When
+Yahoo refuses the requests (HTTP 429), the integration waits twice the interval, then longer at each new
+refusal, up to one hour. The data is for personal use, under the
+[terms of service of Yahoo](https://legal.yahoo.com/us/en/yahoo/terms/otos/index.html): prices delayed and
+indicative, not for trading.
 
 ## Troubleshooting
 
-The integration logs everything it does: check the integration logs from the
-Gladys UI (or `docker logs` on the host) with `LOG_LEVEL=debug` for the full
-detail.
+- **No device in the Discover tab**: check the symbols, then use **Show the current prices**: it lists those
+  Yahoo does not know. The status of the integration says it too.
+- **"Yahoo Finance refuses the requests for now"**: wait; the readings resume by themselves. Lower the number
+  of symbols or raise the refresh interval if it comes back often.
+- **The market stays "Closed" during the session**: the exchange may be on a holiday, or the instrument has
+  not traded yet today.
+- **A price alert does not fire**: the symbol must also be in the list of symbols, and the alert must be
+  crossed after you saved it.
+- Logs: `LOG_LEVEL=debug` shows each reading.
+
+## Limits
+
+- Delayed and indicative prices; no history imported (the history starts when the device is created).
+- One price per symbol: no portfolio quantities or value.
+- 20 symbols at most.
+- The change of a cryptocurrency is counted from 00:00 UTC, not over 24 hours.
+- On the first day of a symbol, a move already there at the first reading of the session fires nothing.
+- Unofficial access to Yahoo: it may stop working without notice.

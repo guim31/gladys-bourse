@@ -1,0 +1,63 @@
+{
+  "chart": {
+    "result": [
+      {
+        "meta": {
+          "currency": "USD",
+          "symbol": "^GSPC",
+          "exchangeName": "SNP",
+          "fullExchangeName": "SNP",
+          "instrumentType": "INDEX",
+          "regularMarketTime": 1792096433,
+          "gmtoffset": -14400,
+          "timezone": "EDT",
+          "exchangeTimezoneName": "America/New_York",
+          "regularMarketPrice": 7744.06,
+          "regularMarketChangePercent": 0.325,
+          "fulldayChange": 25.12,
+          "regularMarketDayHigh": 7754.15,
+          "regularMarketDayLow": 7669.66,
+          "longName": "S&P 500",
+          "shortName": "S&P 500",
+          "chartPreviousClose": 7718.94,
+          "priceHint": 2,
+          "currentTradingPeriod": {
+            "pre": {
+              "timezone": "EDT",
+              "end": 1792071000,
+              "start": 1792051200,
+              "gmtoffset": -14400
+            },
+            "regular": {
+              "timezone": "EDT",
+              "end": 1792094400,
+              "start": 1792071000,
+              "gmtoffset": -14400
+            },
+            "post": {
+              "timezone": "EDT",
+              "end": 1792108800,
+              "start": 1792094400,
+              "gmtoffset": -14400
+            }
+          },
+          "dataGranularity": "1d",
+          "range": "1d"
+        },
+        "timestamp": [1792071000],
+        "indicators": {
+          "quote": [
+            {
+              "high": [7754.149902],
+              "low": [7669.660156],
+              "close": [7744.060059],
+              "open": [7687.310059],
+              "volume": [3428090000]
+            }
+          ]
+        }
+      }
+    ],
+    "error": null
+  }
+}

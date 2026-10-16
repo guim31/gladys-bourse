@@ -16,8 +16,8 @@ its only runtime dependency. It started from the official JavaScript template.
 ```bash
 npm install
 npm test                                  # node --test, the built-in runner
-node --test test/devices.test.js          # one file
-node --test --test-name-pattern "plug"    # tests whose name matches
+node --test test/monitor.test.js          # one file
+node --test --test-name-pattern "alert"   # tests whose name matches
 npm run lint                              # ESLint
 npm run format:check                      # Prettier, as the CI runs it
 npm run format                            # Prettier, fix in place
@@ -32,15 +32,19 @@ pushing.
 
 ```
 index.js                          SDK wiring only: handlers registered before connect()
-src/devices/index.js              registry of the device blueprints + dispatch helpers
-src/devices/<type>.js             one device type per file (buildDevice, onPoll, onSetValue...)
-src/scenes.js                     scene action handlers (manifest `scene_actions`)
-src/widgets.js                    dashboard widget handlers (manifest `widgets`)
-src/config.js                     DEFAULT_CONFIG (mirrors the manifest defaults) + normalization
-src/weather.js                    example driver (Open-Meteo)
+src/app.js                        registers every SDK handler on a GladysIntegration (or the fake)
+src/monitor.js                    refresh cycle: Yahoo → quotes → devices, states, scene triggers
+src/yahoo.js                      Yahoo Finance "chart" client (one symbol per request, parsing)
+src/device.js                     one device per symbol: external ids, features, buildDevice
+src/actions.js                    scene actions `read_quote`, `read_portfolio`; config action `check_now`
+src/widgets.js                    dashboard widget `quotes` (card-list)
+src/texts.js                      texts of the container in en/fr/de/es, number and date formats
+src/config.js                     DEFAULT_CONFIG (mirrors the manifest defaults) + parsing
+src/store.js                      /data/bourse.json: price alerts and daily moves fired (atomic)
 gladys-assistant-integration.json manifest: name, config_schema, actions, image...
-docs/en.md, docs/fr.md            user documentation, re-hosted by Gladys (mandatory)
-test/                             node --test, against the SDK's fake Gladys (integration-sdk/testing)
+docs/{en,fr,de,es}.md             user documentation, re-hosted by Gladys (en and fr mandatory)
+test/                             node --test, against the SDK's fake Gladys and a fake Yahoo
+test/fixtures/yahoo/              real chart answers recorded on 16/10/2026, reduced
 .github/scripts/release.mjs       release helpers (manifest bump, changelog), tested in test/
 ```
 
@@ -70,8 +74,9 @@ test/                             node --test, against the SDK's fake Gladys (in
   `type: "provider"`: 5.1.0). `test/manifest.test.js` ties the manifest to the
   code (defaults, action, scene and widget handlers): change both sides
   together.
-- **User-facing text** is bilingual (English and French): action messages,
-  manifest texts, and `docs/en.md` / `docs/fr.md`, kept in sync.
+- **User-facing text** exists in English, French, German ("du") and Spanish
+  ("usted"): manifest, messages, feature names, widget, and `docs/*.md` with the
+  same sections. `test/i18n.test.js` enforces it.
 - **Style.** Prettier formats, ESLint catches mistakes. Comments explain why,
   in English. Tests never touch the network.
 
@@ -233,3 +238,31 @@ long, et sur un « Sie »/« Ihr… » de politesse en allemand. Le store exige 
 - Docs `en`, `fr`, `de`, `es` avec les mêmes sections.
 - Chauffe, ouverture, sécurité : ne rien rendre pilotable « comme un thermostat » ou par un assistant
   vocal quand une erreur serait dangereuse (leçon d'OctoPrint).
+
+## Yahoo Finance (cette intégration)
+
+- **Point d'accès** : `https://query1.finance.yahoo.com/v8/finance/chart/<symbole>?range=1d&interval=1d`,
+  sans clé ni cookie/crumb (le 16/10/2026). Un symbole inconnu répond **HTTP 404** avec
+  `{"chart":{"result":null,"error":{"code":"Not Found"}}}`.
+- **User-agent** : un user-agent de **navigateur complet (Chrome) reçoit 429** d'emblée, alors que
+  `curl/…` aussi ; un user-agent simple (`Mozilla/5.0`, `node`, ou le nôtre `gladys-bourse (+url)`) passe.
+  Mesuré le 16/10/2026 depuis une IP résidentielle : à revérifier si les 429 apparaissent.
+- `meta` suffit : `regularMarketPrice`, `chartPreviousClose` (avec `range=1d`, c'est la clôture de la
+  veille), `currency`, `priceHint` (décimales), `longName`/`shortName`, `currentTradingPeriod.regular`
+  (`start`/`end` en secondes), `regularMarketTime`. Les champs plus récents `fulldayChange` et
+  `regularMarketChangePercent` ne sont pas utilisés : pour une crypto ils portent sur 24 h glissantes
+  alors que `chartPreviousClose` est le cours de 00:00 UTC ; on calcule tout depuis `chartPreviousClose`,
+  cohérent avec la fonctionnalité « Clôture précédente ».
+- **Marché ouvert** = maintenant dans `regular` **et** `regularMarketTime >= regular.start` (un jour férié
+  garde les horaires habituels, sans échange). La nuit, `regular` décrit déjà la séance du jour pour Paris,
+  mais encore celle de la veille pour New York.
+- Avant le premier échange d'une séance, Yahoo donne déjà la nouvelle séance mais **la variation de la
+  veille** : le déclencheur « forte variation » ne l'évalue que si `regularMarketTime >= regular.start`.
+  Le conteneur lit à chaque cycle pendant les heures de séance, même sans échange.
+- Londres cote en **pence** (`GBp`) : pas d'unité Gladys. Unités posées seulement pour EUR, USD, GBP.
+- Couples : `currency/decimal` pour cours, variation, clôture ; variation en % = `currency/decimal` avec
+  l'unité `percent` (le serveur ne valide l'unité que contre la liste globale) ; devise et marché en
+  `text/text`.
+- L'identifiant de plateforme échappe `^` et `=` (`^FCHI` → `_5EFCHI`, `EURUSD=X` → `EURUSD_3DX`) : figé.
+- Les seuils de cours vivent dans la configuration (les filtres de scène ne font qu'égalité) ; la forte
+  variation publie **un événement par niveau franchi**, d'où un filtre « niveau » obligatoire.
