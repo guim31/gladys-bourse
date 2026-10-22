@@ -8,8 +8,8 @@
     "de": "Kurse von Aktien, Indizes, ETFs, Währungen und Kryptos in Gladys, von Yahoo Finance.",
     "es": "Cotizaciones de acciones, índices, ETF, divisas y criptos en Gladys, de Yahoo Finance."
   },
-  "version": "1.0.0",
-  "docker_image": "ghcr.io/guim31/gladys-bourse:1.0.0",
+  "version": "1.0.1",
+  "docker_image": "ghcr.io/guim31/gladys-bourse:1.0.1",
   "gladys_version": ">=5.1.0",
   "cover_image": "https://raw.githubusercontent.com/guim31/gladys-bourse/main/cover.png",
   "categories": ["services"],
