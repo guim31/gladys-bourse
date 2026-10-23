@@ -120,10 +120,14 @@ test('the container reads by itself, without onPoll (own timer)', async (t) => {
     store: gladysWorld.store,
     fetch: api.fetch,
     timers: true,
+    // The test clock, not Date.now(): due() compares it to the fixture's
+    // session hours, so the real date made this test fail after 16/10.
+    now: gladysWorld.clock.now,
   });
   await monitor.start(normalizeConfig({ symbols: 'BTC-EUR', refresh_interval: '5' }));
   await monitor.running;
   const before = api.requests.length;
+  gladysWorld.clock.advance(5 * MINUTE);
   t.mock.timers.tick(5 * MINUTE);
   await monitor.running;
   assert.equal(api.requests.length, before + 1);
